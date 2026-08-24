@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
   if (accessToken) {
     const decodedAccessToken = utilsJwt.verifyToken(
       accessToken,
-      process.env.JWT_ACCESS_SECRET as string
+      process.env.ACCESS_TOKEN_SECRET_KEY as string
     );
 
     if (decodedAccessToken.success && decodedAccessToken.data) {
@@ -26,13 +26,13 @@ export async function proxy(request: NextRequest) {
   if (accessToken && AUTH_ROUTES.includes(pathName)) {
     if (userRole === "ADMIN") {
       return NextResponse.redirect(
-        new URL("/dashboard/admin", request.url)
+        new URL("/admin-dashboard", request.url)
       );
     }
 
     if (userRole === "PROVIDER") {
       return NextResponse.redirect(
-        new URL("/dashboard/provider", request.url)
+        new URL("/provider-dashboard", request.url)
       );
     }
 
@@ -44,7 +44,14 @@ export async function proxy(request: NextRequest) {
   }
 
   // Dashboard protected
-  if (pathName.startsWith("/dashboard") && !accessToken) {
+ // Protected routes
+  const isProtectedRoute =
+    pathName.startsWith("/admin-dashboard") ||
+    pathName.startsWith("/provider-dashboard") ||
+    pathName.startsWith("/dashboard/customer");
+
+  // Login না করলে protected route এ যেতে পারবে না
+  if (isProtectedRoute && !accessToken) {
     const loginUrl = new URL("/login", request.url);
 
     loginUrl.searchParams.set("redirectTo", pathName);
@@ -52,9 +59,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+
   // Admin authorization
   if (
-    pathName.startsWith("/dashboard/admin") &&
+    pathName.startsWith("/admin-dashboard") &&
     userRole !== "ADMIN"
   ) {
     return NextResponse.redirect(
@@ -64,7 +72,7 @@ export async function proxy(request: NextRequest) {
 
   // Provider authorization
   if (
-    pathName.startsWith("/dashboard/provider") &&
+    pathName.startsWith("/provider-dashboard") &&
     userRole !== "PROVIDER"
   ) {
     return NextResponse.redirect(

@@ -20,9 +20,9 @@ export function LoginForm() {
       });
 
       if (result.role === "ADMIN") {
-        router.push("/dashboard/admin");
+        router.push("/admin-dashboard");
       } else if (result.role === "PROVIDER") {
-        router.push("/dashboard/provider");
+        router.push("/provider-dashboard");
       } else if (result.role === "CUSTOMER") {
         router.push("/dashboard/customer");
       }
