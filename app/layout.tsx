@@ -16,9 +16,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+       suppressHydrationWarning
       className={cn("h-full", "antialiased", "font-sans", ibmPlexSans.variable, sourceSans3Heading.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body suppressHydrationWarning>
+        <div className="min-h-full flex flex-col">
+        {children}
+
+        </div>
+        </body>
     </html>
   );
 }
