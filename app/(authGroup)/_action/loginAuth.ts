@@ -48,6 +48,7 @@ export const loginUser = async (payload: LoginPayload) => {
   );
 
   return {
+    success:true,
     role: payloadData.role,
   };
 };

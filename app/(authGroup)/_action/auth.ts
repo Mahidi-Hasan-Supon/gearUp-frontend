@@ -1,7 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
-
 type RegisterPayload = {
   name: string;
   email: string;
@@ -30,5 +28,8 @@ export async function registerAction(payload: RegisterPayload) {
     };
   }
 
-  redirect("/login");
+  return {
+    success: true,
+    message: result.message || "Registration successful",
+  };
 }

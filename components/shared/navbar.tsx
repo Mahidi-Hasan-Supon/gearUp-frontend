@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,16 +7,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { logoutUser } from "@/service/logout";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {  redirectToMyProfile } from "@/service/getMyProfile";
 
 export default function Navbar() {
+  const router = useRouter();
+  const handleLogout = async () => {
+    const result = await logoutUser();
+    if (result.success) {
+      toast.success("Logout Successfully");
+    }
+    router.push('/login')
+    router.refresh()
+  };
   return (
     <nav className="border-b bg-background">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-bold tracking-tight"
-        >
+        <Link href="/" className="text-2xl font-bold tracking-tight">
           GearUp
         </Link>
 
@@ -63,27 +74,23 @@ export default function Navbar() {
           {/* User Dropdown - পরে authentication হলে ব্যবহার করব */}
           <DropdownMenu>
             <DropdownMenuTrigger className="border shadow bg-gray-100 rounded-2xl p-1.5">
-              
-                Account
-              
+              Account
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
               <DropdownMenuItem>
-                <Link href="/dashboard/customer">
-                  Dashboard
-                </Link>
+                <Link href="/dashboard/customer">Dashboard</Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem>
-                <Link href="/dashboard/customer/profile">
-                  Profile
-                </Link>
+                <form action={redirectToMyProfile}>
+                  <button type="submit" className="w-full text-left">
+                    Profile
+                  </button>
+                </form>
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
-                Logout
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

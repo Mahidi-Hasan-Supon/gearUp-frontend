@@ -14,30 +14,38 @@ export async function proxy(request: NextRequest) {
   let decodedAccessToken = accessToken
     ? utilsJwt.verifyToken(
         accessToken,
-        process.env.ACCESS_TOKEN_SECRET_KEY as string
+        process.env.ACCESS_TOKEN_SECRET_KEY as string,
       )
     : null;
 
-  const decodedRefreshToken = refreshToken
-    ? utilsJwt.verifyToken(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET_KEY as string
-      )
-    : null;
+  // const decodedRefreshToken = refreshToken
+  //   ? utilsJwt.verifyToken(
+  //       refreshToken,
+  //       process.env.REFRESH_TOKEN_SECRET_KEY as string,
+  //     )
+  //   : null;
+
+  console.log("ACCESS TOKEN:", !!accessToken);
+  console.log("REFRESH TOKEN:", !!refreshToken);
+  console.log("ACCESS TOKEN VERIFY:", decodedAccessToken);
+  // console.log("REFRESH TOKEN VERIFY:", decodedRefreshToken);
 
   // Access token expired/invalid হলে refresh token দিয়ে
   // নতুন access token নেওয়া হবে
-  if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
+  if (!decodedAccessToken?.success && refreshToken) {
+      console.log("🔄 REFRESH START");
     const result = await getNewAccessToken();
+    console.log("refresh result" , result);
 
     if (result.success) {
       const newAccessToken = result.data.accessToken;
+          console.log("✅ NEW ACCESS TOKEN RECEIVED");
 
       accessToken = newAccessToken;
 
       decodedAccessToken = utilsJwt.verifyToken(
         newAccessToken,
-        process.env.ACCESS_TOKEN_SECRET_KEY as string
+        process.env.ACCESS_TOKEN_SECRET_KEY as string,
       );
     }
   }
@@ -51,21 +59,15 @@ export async function proxy(request: NextRequest) {
   // Logged-in user login/register এ গেলে role অনুযায়ী dashboard
   if (accessToken && AUTH_ROUTES.includes(pathName)) {
     if (userRole === "ADMIN") {
-      return NextResponse.redirect(
-        new URL("/admin-dashboard", request.url)
-      );
+      return NextResponse.redirect(new URL("/admin-dashboard", request.url));
     }
 
     if (userRole === "PROVIDER") {
-      return NextResponse.redirect(
-        new URL("/provider-dashboard", request.url)
-      );
+      return NextResponse.redirect(new URL("/provider-dashboard", request.url));
     }
 
     if (userRole === "CUSTOMER") {
-      return NextResponse.redirect(
-        new URL("/dashboard/customer", request.url)
-      );
+      return NextResponse.redirect(new URL("/dashboard/customer", request.url));
     }
   }
 
@@ -86,9 +88,7 @@ export async function proxy(request: NextRequest) {
 
   // Access token invalid এবং refresh করাও সম্ভব হয়নি
   if (isProtectedRoute && !userRole) {
-    const response = NextResponse.redirect(
-      new URL("/login", request.url)
-    );
+    const response = NextResponse.redirect(new URL("/login", request.url));
 
     response.cookies.delete("accessToken");
     response.cookies.delete("refreshToken");
@@ -97,33 +97,18 @@ export async function proxy(request: NextRequest) {
   }
 
   // ADMIN authorization
-  if (
-    pathName.startsWith("/admin-dashboard") &&
-    userRole !== "ADMIN"
-  ) {
-    return NextResponse.redirect(
-      new URL("/not-found", request.url)
-    );
+  if (pathName.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
   }
 
   // PROVIDER authorization
-  if (
-    pathName.startsWith("/provider-dashboard") &&
-    userRole !== "PROVIDER"
-  ) {
-    return NextResponse.redirect(
-      new URL("/not-found", request.url)
-    );
+  if (pathName.startsWith("/provider-dashboard") && userRole !== "PROVIDER") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
   }
 
   // CUSTOMER authorization
-  if (
-    pathName.startsWith("/dashboard/customer") &&
-    userRole !== "CUSTOMER"
-  ) {
-    return NextResponse.redirect(
-      new URL("/not-found", request.url)
-    );
+  if (pathName.startsWith("/dashboard/customer") && userRole !== "CUSTOMER") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
   }
 
   // New access token browser cookie-তে update
@@ -147,7 +132,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|.*\\.png$).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

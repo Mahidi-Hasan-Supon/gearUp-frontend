@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../_action/loginAuth";
+import { toast } from "sonner";
 
 export function LoginForm() {
   const router = useRouter();
@@ -18,6 +19,9 @@ export function LoginForm() {
         email,
         password,
       });
+      if (result.success) {
+        toast.success("Login successful");
+      }
 
       if (result.role === "ADMIN") {
         router.push("/admin-dashboard");
@@ -27,6 +31,7 @@ export function LoginForm() {
         router.push("/dashboard/customer");
       }
     } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Login failed");
       console.error(error);
     }
   };

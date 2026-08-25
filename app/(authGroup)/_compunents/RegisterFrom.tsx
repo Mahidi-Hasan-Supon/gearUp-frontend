@@ -5,8 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerAction } from "../_action/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 
 export default function RegisterForm() {
+  const router = useRouter()
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +26,17 @@ export default function RegisterForm() {
     };
 
     const result = await registerAction(payload);
+    if (result.success) {
+      toast.success(result.message);
+      router.push("/login");
+      return;
+    }
+
+    if (result.success === false) {
+      toast.error(result.message);
+      setError(result.message);
+      setLoading(false);
+    }
 
     if (result?.success === false) {
       setError(result.message);
@@ -37,12 +52,7 @@ export default function RegisterForm() {
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
 
-        <Input
-          id="name"
-          name="name"
-          placeholder="Enter your name"
-          required
-        />
+        <Input id="name" name="name" placeholder="Enter your name" required />
       </div>
 
       <div className="space-y-2">
@@ -83,17 +93,9 @@ export default function RegisterForm() {
         </select>
       </div>
 
-      {error && (
-        <p className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full"
-      >
+      <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Creating account..." : "Create Account"}
       </Button>
     </form>
