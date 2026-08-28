@@ -48,3 +48,37 @@ export const redirectToMyProfile = async () => {
 
   redirect("/");
 };
+
+
+// current user
+export const getCurrentUser = async () => {
+  const cookieStore = await cookies();
+
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+  if (!accessToken) {
+    return null;
+  }
+
+  const res = await fetch(
+    `${process.env.BACKEND_API_URL}/api/auth/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const result = await res.json();
+
+  if (!result.success) {
+    return null;
+  }
+
+  return result.data;
+};

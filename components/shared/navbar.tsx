@@ -10,17 +10,39 @@ import {
 import { logoutUser } from "@/service/logout";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {  redirectToMyProfile } from "@/service/getMyProfile";
+import { redirectToMyProfile, getCurrentUser } from "@/service/getMyProfile";
+import { useEffect, useState } from "react";
+import { User } from "@/lib/types";
 
 export default function Navbar() {
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const handleLogout = async () => {
     const result = await logoutUser();
     if (result.success) {
       toast.success("Logout Successfully");
     }
-    router.push('/login')
-    router.refresh()
+    router.push("/login");
+    router.refresh();
+  };
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const result = await getCurrentUser();
+      setUser(result);
+    };
+
+    loadUser();
+  }, []);
+
+  const handleProfile = () => {
+    if (user?.role === "ADMIN") {
+      router.push("/admin-dashboard/profile");
+    } else if (user?.role === "PROVIDER") {
+      router.push("/provider-dashboard/profile");
+    } else if (user?.role === "CUSTOMER") {
+      router.push("/dashboard/customer/profile");
+    }
   };
   return (
     <nav className="border-b bg-background">
@@ -63,36 +85,64 @@ export default function Navbar() {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-          <Button variant="outline">
-            <Link href="/login">Login</Link>
-          </Button>
+          {!user ? (
+            <>
+              <Button variant="outline">
+                <Link href="/login">Login</Link>
+              </Button>
 
-          <Button>
-            <Link href="/register">Register</Link>
-          </Button>
+              <Button>
+                <Link href="/register">Register</Link>
+              </Button>
+            </>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="border shadow text-white bg-green-700 rounded-2xl px-4 py-2">
+                 {user?.name || "Account"}
+              </DropdownMenuTrigger>
 
-          {/* User Dropdown - পরে authentication হলে ব্যবহার করব */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="border shadow bg-gray-100 rounded-2xl p-1.5">
-              Account
-            </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <div className="px-3 py-2">
+                  <p className="font-semibold">{user.name}</p>
+                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                </div>
 
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Link href="/dashboard/customer">Dashboard</Link>
-              </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link
+                    href={
+                      user.role === "ADMIN"
+                        ? "/admin-dashboard"
+                        : user.role === "PROVIDER"
+                          ? "/provider-dashboard"
+                          : "/dashboard/customer"
+                    }
+                    className="w-full"
+                  >
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
 
-              <DropdownMenuItem>
-                <form action={redirectToMyProfile}>
-                  <button type="submit" className="w-full text-left">
-                    Profile
-                  </button>
-                </form>
-              </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleProfile}>
+                  <form>
+                    <button type="submit" className="w-full text-left">
+                      Profile
+                    </button>
+                  </form>
+                </DropdownMenuItem>
+                {/* <DropdownMenuItem>
+                  <form action={redirectToMyProfile}>
+                    <button type="submit" className="w-full text-left">
+                      Profile
+                    </button>
+                  </form>
+                </DropdownMenuItem> */}
 
-              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
     </nav>

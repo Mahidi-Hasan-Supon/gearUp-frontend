@@ -10,5 +10,5 @@ export const logoutUser = async () => {
 
   return {
     success: true,
-  };
+  }; 
 };
