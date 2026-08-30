@@ -8,13 +8,13 @@ type CreateRentalPayload = {
   endDate: string;
 };
 
-export const createRental = async (
-  payload: CreateRentalPayload,
-) => {
+export const createRental = async (payload: CreateRentalPayload) => {
   const cookieStore = await cookies();
 
-  const accessToken =
-    cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+//   console.log("RENTAL PAYLOAD:", payload);
+//   console.log("ACCESS TOKEN EXISTS:", !!accessToken);
 
   if (!accessToken) {
     return {
@@ -23,20 +23,20 @@ export const createRental = async (
     };
   }
 
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/rental`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(payload),
-      cache: "no-store",
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/rental`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
-  );
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+//   console.log("res" , res.status);
 
   const result = await res.json();
+
+//   console.log("result" , result);
 
   if (!res.ok || !result.success) {
     return {

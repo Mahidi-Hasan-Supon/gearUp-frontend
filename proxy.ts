@@ -25,21 +25,21 @@ export async function proxy(request: NextRequest) {
   //     )
   //   : null;
 
-  console.log("ACCESS TOKEN:", !!accessToken);
-  console.log("REFRESH TOKEN:", !!refreshToken);
-  console.log("ACCESS TOKEN VERIFY:", decodedAccessToken);
+  // console.log("ACCESS TOKEN:", !!accessToken);
+  // console.log("REFRESH TOKEN:", !!refreshToken);
+  // console.log("ACCESS TOKEN VERIFY:", decodedAccessToken);
   // console.log("REFRESH TOKEN VERIFY:", decodedRefreshToken);
 
   // Access token expired/invalid হলে refresh token দিয়ে
   // নতুন access token নেওয়া হবে
   if (!decodedAccessToken?.success && refreshToken) {
-      console.log("🔄 REFRESH START");
+      // console.log("🔄 REFRESH START");
     const result = await getNewAccessToken();
-    console.log("refresh result" , result);
+    // console.log("refresh result" , result);
 
     if (result.success) {
       const newAccessToken = result.data.accessToken;
-          console.log("✅ NEW ACCESS TOKEN RECEIVED");
+          // console.log("✅ NEW ACCESS TOKEN RECEIVED");
 
       accessToken = newAccessToken;
 
