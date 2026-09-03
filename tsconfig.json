@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/(dashboardGroup)/dashboard/customer/rental"  ],
   "exclude": ["node_modules"]
 }
