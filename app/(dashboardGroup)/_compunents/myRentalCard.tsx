@@ -1,4 +1,5 @@
 import { CalendarDays, Package, Wallet } from "lucide-react";
+import Link from "next/link";
 
 type Rental = {
   id: string;
@@ -96,9 +97,11 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
         </div>
 
         {/* Payment - পরে Stripe connect করব */}
+         <Link href={`/dashboard/customer/orders/${rental.id}/pay`}>
         <button className="mt-5 w-full rounded-xl bg-primary py-2.5 font-medium text-primary-foreground transition hover:opacity-90">
           Pay Now
         </button>
+         </Link>
       </div>
     </div>
   );
