@@ -146,7 +146,7 @@ export default function RentForm({
 
           <div className="flex justify-between text-sm">
             <span>Price per day</span>
-            <span>৳{pricePerDay}</span>
+            <span>${pricePerDay}</span>
           </div>
 
           <div className="flex justify-between text-sm">
@@ -156,7 +156,7 @@ export default function RentForm({
 
           <div className="border-t pt-3 flex justify-between font-bold">
             <span>Total Price</span>
-            <span>৳{totalPrice}</span>
+            <span>${totalPrice}</span>
           </div>
         </div>
       )}

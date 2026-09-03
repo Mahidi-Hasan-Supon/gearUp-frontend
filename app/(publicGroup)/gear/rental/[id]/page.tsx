@@ -48,7 +48,7 @@ export default async function RentPage({ params }: RentPageProps) {
             <div className="flex justify-between border-t pt-4">
               <span>Price per day</span>
 
-              <span className="font-bold">৳{gear.pricePerDay}</span>
+              <span className="font-bold">${gear.pricePerDay}</span>
             </div>
 
             <div className="flex justify-between">

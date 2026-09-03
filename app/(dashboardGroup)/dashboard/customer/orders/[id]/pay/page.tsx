@@ -67,7 +67,7 @@ export default async function PayPage({ params }: PayPageProps) {
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold">Total Amount</span>
 
-              <span className="text-2xl font-bold">৳{rental.totalPrice}</span>
+              <span className="text-2xl font-bold">${rental.totalPrice}</span>
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function GearDetails({ gear }: GearDetailsProps) {
           </p>
 
           <p>
-            <strong>Price:</strong> ৳{gear.pricePerDay} / day
+            <strong>Price:</strong> ${gear.pricePerDay} / day
           </p>
 
           <p>
@@ -50,7 +50,7 @@ export default function GearDetails({ gear }: GearDetailsProps) {
         </div>
         {gear.status === "AVAILABLE" ? (
           <Link
-              href={`/gear/rental/${gear.id}`}
+            href={`/gear/rental/${gear.id}`}
             className="mt-8 block w-full rounded-xl bg-primary px-5 py-3 text-center font-semibold text-          primary-foreground transition hover:opacity-90"
           >
             Rent Now

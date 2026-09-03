@@ -16,26 +16,16 @@ export default function GearCard({ gear }: GearCardProps) {
 
       <div className="space-y-3 p-4">
         <div>
-          <h2 className="text-lg font-semibold">
-            {gear.title}
-          </h2>
+          <h2 className="text-lg font-semibold">{gear.title}</h2>
 
-          <p className="text-sm text-muted-foreground">
-            {gear.brand}
-          </p>
+          <p className="text-sm text-muted-foreground">{gear.brand}</p>
         </div>
 
-        <p className="text-sm">
-          Category: {gear.category.name}
-        </p>
+        <p className="text-sm">Category: {gear.category.name}</p>
 
-        <p className="font-semibold">
-          ৳{gear.pricePerDay} / day
-        </p>
+        <p className="font-semibold">${gear.pricePerDay} / day</p>
 
-        <p className="text-sm">
-          Available: {gear.quantity}
-        </p>
+        <p className="text-sm">Available: {gear.quantity}</p>
 
         <Link
           href={`/gear/${gear.id}`}
