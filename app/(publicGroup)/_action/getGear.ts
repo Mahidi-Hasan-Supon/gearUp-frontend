@@ -1,6 +1,9 @@
 "use server";
 
 export type Gear = {
+  message: ReactNode;
+  success: any;
+  data: any;
   id: string;
   title: string;
   description: string;

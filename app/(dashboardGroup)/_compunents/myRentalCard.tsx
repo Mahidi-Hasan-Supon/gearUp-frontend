@@ -31,9 +31,7 @@ type MyRentalCardProps = {
 };
 
 export default function MyRentalCard({ rental }: MyRentalCardProps) {
-  const isPaid = rental.payment?.some(
-    (payment) => payment.status === "PAID"
-  );
+  const isPaid = rental.payment?.some((payment) => payment.status === "PAID");
 
   return (
     <div className="overflow-hidden rounded-2xl border bg-background shadow-sm transition hover:shadow-md">
@@ -61,9 +59,7 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
 
           <h2 className="mt-1 text-xl font-bold">{rental.gear.title}</h2>
 
-          <p className="text-sm text-muted-foreground">
-            {rental.gear.brand}
-          </p>
+          <p className="text-sm text-muted-foreground">{rental.gear.brand}</p>
         </div>
 
         {/* Rental Information */}
@@ -72,9 +68,7 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
             <CalendarDays className="h-5 w-5 text-muted-foreground" />
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Rental Period
-              </p>
+              <p className="text-xs text-muted-foreground">Rental Period</p>
 
               <p className="text-sm font-medium">
                 {new Date(rental.startDate).toLocaleDateString()}
@@ -85,13 +79,9 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">
-              Total Days
-            </span>
+            <span className="text-muted-foreground">Total Days</span>
 
-            <span className="font-medium">
-              {rental.totalDays} days
-            </span>
+            <span className="font-medium">{rental.totalDays} days</span>
           </div>
         </div>
 
@@ -100,21 +90,15 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
           <div className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-muted-foreground" />
 
-            <span className="text-sm text-muted-foreground">
-              Total Price
-            </span>
+            <span className="text-sm text-muted-foreground">Total Price</span>
           </div>
 
-          <span className="text-xl font-bold">
-            ${rental.totalPrice}
-          </span>
+          <span className="text-xl font-bold">${rental.totalPrice}</span>
         </div>
 
         {/* Rental Status */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            Rental Status
-          </span>
+          <span className="text-sm text-muted-foreground">Rental Status</span>
 
           <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
             {rental.status}
@@ -126,15 +110,26 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
           <div className="mt-5 w-full rounded-xl bg-green-100 py-2.5 text-center font-medium text-green-700">
             Payment Completed
           </div>
-        ) : (
+        ) : rental.status === "CONFIRMED" ? (
           <Link href={`/dashboard/customer/orders/${rental.id}/pay`}>
             <button className="mt-5 w-full rounded-xl bg-primary py-2.5 font-medium text-primary-foreground transition hover:opacity-90">
               Pay Now
             </button>
           </Link>
+        ) : rental.status === "PLACED" ? (
+          <div className="mt-5 w-full rounded-xl bg-muted py-2.5 text-center font-medium text-muted-foreground">
+            Waiting for provider confirmation
+          </div>
+        ) : rental.status === "CANCELLED" ? (
+          <div className="mt-5 w-full rounded-xl bg-destructive/10 py-2.5 text-center font-medium text-destructive">
+            Order Cancelled
+          </div>
+        ) : (
+          <div className="mt-5 w-full rounded-xl bg-muted py-2.5 text-center font-medium text-muted-foreground">
+            Payment Unavailable
+          </div>
         )}
       </div>
     </div>
   );
 }
-

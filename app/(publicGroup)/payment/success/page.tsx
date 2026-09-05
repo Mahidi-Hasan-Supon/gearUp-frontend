@@ -70,7 +70,7 @@ export default function PaymentSuccessPage() {
           </p>
 
           <Link
-            href="/dashboard/customer/rentals"
+            href="/dashboard/customer"
             className="mt-6 inline-block rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground"
           >
             Go to Dashboard
@@ -94,7 +94,7 @@ export default function PaymentSuccessPage() {
         </p>
 
         <Link
-          href="/dashboard/customer"
+          href="/dashboard/customer/rentals"
           className="mt-6 inline-block rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground"
         >
           Go to My Rentals
