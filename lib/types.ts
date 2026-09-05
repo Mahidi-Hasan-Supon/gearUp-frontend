@@ -19,3 +19,27 @@ export type Gear = {
     name: string;
   } | null;
 };
+
+ type Payment = {
+  id: string;
+  status: string;
+  amount: number;
+  currency: string;
+};
+
+export type CustomerRental = {
+  id: string;
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  totalPrice: number;
+  status: string;
+
+  payment: Payment[];
+
+  gear: {
+    id?: string;
+    title: string;
+    brand: string;
+  };
+};
