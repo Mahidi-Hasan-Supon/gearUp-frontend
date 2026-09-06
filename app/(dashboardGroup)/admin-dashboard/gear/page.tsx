@@ -1,11 +1,57 @@
-import React from 'react';
+import { getAdminGears } from "@/app/(dashboardGroup)/_action/getAdminGears";
+import AdminGearCard from "../../_compunents/adminGearCard";
 
-const AdminGearPage = () => {
+export default async function AdminGearPage() {
+  const result = await getAdminGears();
+
+  if (!result.success) {
     return (
-        <div>
-          admin gearPage 
+      <div className="p-6">
+        <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-destructive">
+          {result.message}
         </div>
+      </div>
     );
-};
+  }
 
-export default AdminGearPage;
+  const gears = result.data;
+
+  return (
+    <div className="space-y-8 p-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold">
+          Gear Management
+        </h1>
+
+        <p className="mt-2 text-muted-foreground">
+          View and monitor all gear available in the system.
+        </p>
+      </div>
+
+      {/* Total */}
+      <div className="text-sm text-muted-foreground">
+        Total Gear:{" "}
+        <span className="font-semibold text-foreground">
+          {gears.length}
+        </span>
+      </div>
+
+      {/* Gear List */}
+      {gears.length === 0 ? (
+        <div className="rounded-xl border p-10 text-center text-muted-foreground">
+          No gear found.
+        </div>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {gears.map((gear) => (
+            <AdminGearCard
+              key={gear.id}
+              gear={gear}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
