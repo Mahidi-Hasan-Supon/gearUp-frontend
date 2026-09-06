@@ -1,4 +1,3 @@
-
 import { getCategories } from "@/app/(dashboardGroup)/_action/getCategories";
 import EditGearForm from "@/app/(dashboardGroup)/_compunents/editGearFrom";
 import { getGearById } from "@/app/(publicGroup)/_action/getGearById";
@@ -9,9 +8,7 @@ type EditGearPageProps = {
   }>;
 };
 
-export default async function EditGearPage({
-  params,
-}: EditGearPageProps) {
+export default async function EditGearPage({ params }: EditGearPageProps) {
   const { id } = await params;
 
   const [gear, categoryResult] = await Promise.all([
@@ -49,14 +46,7 @@ export default async function EditGearPage({
         </p>
       </div>
 
-      <EditGearForm
-        gear={gear}
-        categories={categoryResult.data}
-      />
+      <EditGearForm gear={gear} categories={categoryResult.data} />
     </div>
   );
 }
-
-
-
-

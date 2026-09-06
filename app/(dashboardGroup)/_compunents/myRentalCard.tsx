@@ -1,5 +1,25 @@
-import { CalendarDays, Package, Wallet } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  CalendarDays,
+  Package,
+  Star,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { createReview } from "../_action/createReviews";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Rental = {
   id: string;
@@ -20,6 +40,7 @@ type Rental = {
     title: string;
     brand: string;
     image?: string;
+
     category?: {
       name: string;
     };
@@ -28,10 +49,55 @@ type Rental = {
 
 type MyRentalCardProps = {
   rental: Rental;
+  reviewedRentalIds?: string[];
 };
 
-export default function MyRentalCard({ rental }: MyRentalCardProps) {
-  const isPaid = rental.payment?.some((payment) => payment.status === "PAID");
+export default function MyRentalCard({
+  rental,
+  reviewedRentalIds = [],
+}: MyRentalCardProps) {
+  const router = useRouter();
+
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const isPaid = rental.payment?.some(
+    (payment) => payment.status === "PAID",
+  );
+
+  const hasReviewed = reviewedRentalIds.includes(rental.id);
+
+  const handleReview = async () => {
+    if (!comment.trim()) {
+      toast.error("Please write a review comment");
+      return;
+    }
+
+    setLoading(true);
+
+    const result = await createReview({
+      rentalId: rental.id,
+      rating,
+      comment,
+    });
+
+    setLoading(false);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success("Review submitted successfully!");
+
+    setComment("");
+    setRating(5);
+    setOpen(false);
+
+    router.refresh();
+  };
 
   return (
     <div className="overflow-hidden rounded-2xl border bg-background shadow-sm transition hover:shadow-md">
@@ -57,9 +123,13 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
             {rental.gear.category?.name || "Gear"}
           </p>
 
-          <h2 className="mt-1 text-xl font-bold">{rental.gear.title}</h2>
+          <h2 className="mt-1 text-xl font-bold">
+            {rental.gear.title}
+          </h2>
 
-          <p className="text-sm text-muted-foreground">{rental.gear.brand}</p>
+          <p className="text-sm text-muted-foreground">
+            {rental.gear.brand}
+          </p>
         </div>
 
         {/* Rental Information */}
@@ -68,7 +138,9 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
             <CalendarDays className="h-5 w-5 text-muted-foreground" />
 
             <div>
-              <p className="text-xs text-muted-foreground">Rental Period</p>
+              <p className="text-xs text-muted-foreground">
+                Rental Period
+              </p>
 
               <p className="text-sm font-medium">
                 {new Date(rental.startDate).toLocaleDateString()}
@@ -79,9 +151,13 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Total Days</span>
+            <span className="text-muted-foreground">
+              Total Days
+            </span>
 
-            <span className="font-medium">{rental.totalDays} days</span>
+            <span className="font-medium">
+              {rental.totalDays} days
+            </span>
           </div>
         </div>
 
@@ -90,15 +166,21 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
           <div className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-muted-foreground" />
 
-            <span className="text-sm text-muted-foreground">Total Price</span>
+            <span className="text-sm text-muted-foreground">
+              Total Price
+            </span>
           </div>
 
-          <span className="text-xl font-bold">${rental.totalPrice}</span>
+          <span className="text-xl font-bold">
+            ${rental.totalPrice}
+          </span>
         </div>
 
         {/* Rental Status */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Rental Status</span>
+          <span className="text-sm text-muted-foreground">
+            Rental Status
+          </span>
 
           <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
             {rental.status}
@@ -107,26 +189,108 @@ export default function MyRentalCard({ rental }: MyRentalCardProps) {
 
         {/* Payment */}
         {isPaid ? (
-          <div className="mt-5 w-full rounded-xl bg-green-100 py-2.5 text-center font-medium text-green-700">
+          <div className="mt-4 w-full rounded-lg bg-green-50 py-2 text-center text-sm font-medium text-green-700">
             Payment Completed
           </div>
         ) : rental.status === "CONFIRMED" ? (
-          <Link href={`/dashboard/customer/orders/${rental.id}/pay`}>
-            <button className="mt-5 w-full rounded-xl bg-primary py-2.5 font-medium text-primary-foreground transition hover:opacity-90">
-              Pay Now
+          <Link
+            href={`/dashboard/customer/orders/${rental.id}/pay`}
+            className="block"
+          >
+            <button className="mt-4 w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+              Proceed to Payment
             </button>
           </Link>
-        ) : rental.status === "PLACED" ? (
-          <div className="mt-5 w-full rounded-xl bg-muted py-2.5 text-center font-medium text-muted-foreground">
+        ) : rental.status !== "RETURNED" ? (
+          <div className="mt-4 w-full rounded-lg bg-muted py-2 text-center text-sm text-muted-foreground">
             Waiting for provider confirmation
           </div>
-        ) : rental.status === "CANCELLED" ? (
-          <div className="mt-5 w-full rounded-xl bg-destructive/10 py-2.5 text-center font-medium text-destructive">
-            Order Cancelled
-          </div>
-        ) : (
-          <div className="mt-5 w-full rounded-xl bg-muted py-2.5 text-center font-medium text-muted-foreground">
-            Payment Unavailable
+        ) : null}
+
+        {/* Review */}
+        {rental.status === "RETURNED" && (
+          <div className="mt-4">
+            {hasReviewed ? (
+              <div className="rounded-lg bg-green-50 py-2.5 text-center text-sm font-medium text-green-700">
+                ✓ Review Submitted
+              </div>
+            ) : (
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger className="w-full rounded-lg border border-primary/20 bg-primary/5 py-2.5 text-sm font-medium text-primary transition hover:bg-primary/10">
+                  <span className="flex items-center justify-center gap-2">
+                    <Star className="h-4 w-4" />
+                    Write a Review
+                  </span>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>
+                      Review {rental.gear.title}
+                    </DialogTitle>
+
+                    <DialogDescription>
+                      Share your experience with this gear.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-5">
+                    {/* Rating */}
+                    <div>
+                      <p className="mb-2 text-sm font-medium">
+                        Your Rating
+                      </p>
+
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            className="transition-transform hover:scale-110"
+                          >
+                            <Star
+                              className={`h-7 w-7 ${
+                                star <= rating
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Comment */}
+                    <div>
+                      <p className="mb-2 text-sm font-medium">
+                        Your Review
+                      </p>
+
+                      <textarea
+                        value={comment}
+                        onChange={(e) =>
+                          setComment(e.target.value)
+                        }
+                        placeholder="Write your review..."
+                        className="min-h-28 w-full resize-none rounded-lg border bg-background p-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+
+                    {/* Submit */}
+                    <button
+                      disabled={loading}
+                      onClick={handleReview}
+                      className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {loading
+                        ? "Submitting..."
+                        : "Submit Review"}
+                    </button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         )}
       </div>

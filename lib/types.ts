@@ -20,7 +20,7 @@ export type Gear = {
   } | null;
 };
 
- type Payment = {
+type Payment = {
   id: string;
   status: string;
   amount: number;
@@ -41,5 +41,29 @@ export type CustomerRental = {
     id?: string;
     title: string;
     brand: string;
+  };
+};
+
+export type Review = {
+  id: string;
+  rating: number;
+  comment: string;
+  customerId: string;
+  gearId: string;
+  rentalId: string;
+  createdAt: string;
+
+  gear: {
+    id: string;
+    title: string;
+    brand: string;
+    image?: string;
+  };
+
+  rental: {
+    id: string;
+    status: string;
+    startDate: string;
+    endDate: string;
   };
 };
