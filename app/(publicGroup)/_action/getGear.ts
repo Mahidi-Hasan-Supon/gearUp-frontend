@@ -1,9 +1,7 @@
+
 "use server";
 
 export type Gear = {
-  message: ReactNode;
-  success: any;
-  data: any;
   id: string;
   title: string;
   description: string;
@@ -16,10 +14,12 @@ export type Gear = {
   providerId: string;
   createdAt: string;
   updatedAt: string;
+
   category: {
     id: string;
     name: string;
   };
+
   provider: {
     id: string;
     name: string;
@@ -28,14 +28,54 @@ export type Gear = {
   };
 };
 
-export const getAllGears = async (): Promise<Gear[]> => {
-  const res = await fetch(
-    `${process.env.BACKEND_API_URL}/api/gear`,
-    {
-      method: "GET",
-      cache: "no-store",
-    },
-  );
+export type GearQuery = {
+  brand?: string;
+  category?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  startDate?: string;
+  endDate?: string;
+};
+
+export const getAllGears = async (
+  query: GearQuery = {},
+): Promise<Gear[]> => {
+  const searchParams = new URLSearchParams();
+
+  if (query.brand) {
+    searchParams.set("brand", query.brand);
+  }
+
+  if (query.category) {
+    searchParams.set("category", query.category);
+  }
+
+  if (query.minPrice) {
+    searchParams.set("minPrice", query.minPrice);
+  }
+
+  if (query.maxPrice) {
+    searchParams.set("maxPrice", query.maxPrice);
+  }
+
+  if (query.startDate) {
+    searchParams.set("startDate", query.startDate);
+  }
+
+  if (query.endDate) {
+    searchParams.set("endDate", query.endDate);
+  }
+
+  const url = `${process.env.BACKEND_API_URL}/api/gear${
+    searchParams.toString()
+      ? `?${searchParams.toString()}`
+      : ""
+  }`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    cache: "no-store",
+  });
 
   const result = await res.json();
 
@@ -45,3 +85,4 @@ export const getAllGears = async (): Promise<Gear[]> => {
 
   return result.data;
 };
+
