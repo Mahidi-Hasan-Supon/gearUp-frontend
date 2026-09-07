@@ -16,6 +16,8 @@ import GearFilter from "../_components/gearFilter";
 
 
 export default async function GearPage({ searchParams }: GearPageProps) {
+
+  
   const params = await searchParams;
 
   const allGears = await getAllGears();

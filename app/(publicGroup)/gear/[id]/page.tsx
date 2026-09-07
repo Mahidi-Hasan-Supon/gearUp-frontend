@@ -10,6 +10,7 @@ type GearDetailsPageProps = {
 export default async function GearDetailsPage({
   params,
 }: GearDetailsPageProps) {
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
   const { id } = await params;
 
   const gear = await getGearById(id);
