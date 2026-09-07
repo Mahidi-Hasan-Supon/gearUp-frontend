@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { redirectToMyProfile, getCurrentUser } from "@/service/getMyProfile";
 import { useEffect, useState } from "react";
 import { User } from "@/lib/types";
+import Image from "next/image";
+import { CircleUser } from "lucide-react";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -97,12 +99,28 @@ export default function Navbar() {
             </>
           ) : (
             <DropdownMenu>
-              <DropdownMenuTrigger className="border shadow text-white bg-green-700 rounded-2xl px-4 py-2">
-                 {user?.name || "Account"}
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium shadow-sm transition-all hover:bg-amber-400  hover:shadow-md focus:outline-none  focus:ring-2  focus:ring-primary focus:ring-offset-2 bg-amber-300">
 
+                 <CircleUser className="h-5 w-5 shrink-0" />
+
+                <span className="leading-none">Click me</span>
+              </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
-                <div className="px-3 py-2">
+                {user.photoUrl ? (
+                  <Image
+                    src={user.photoUrl}
+                    alt={user.name}
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 rounded-full object-cover ml-25 "
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
+                    {" "}
+                    {user.name?.charAt(0).toUpperCase()}{" "}
+                  </div>
+                )}
+                <div className="px-3 py-2 border-t mt-1 border-gray-300">
                   <p className="font-semibold">{user.name}</p>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>

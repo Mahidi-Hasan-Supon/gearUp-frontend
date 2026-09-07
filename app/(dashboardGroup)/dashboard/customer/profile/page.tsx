@@ -1,5 +1,6 @@
 import { getMyProfile } from "@/service/getMyProfile";
 import { Mail, ShieldCheck, User } from "lucide-react";
+import Image from "next/image";
 
 export default async function CustomerProfilePage() {
   const user = await getMyProfile();
@@ -18,9 +19,20 @@ export default async function CustomerProfilePage() {
         {/* Header */}
         <div className="bg-muted/40 p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
-              {user.name?.charAt(0).toUpperCase()}
-            </div>
+            {user.photoUrl ? (
+              <Image
+                src={user.photoUrl}
+                alt={user.name}
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+                {" "}
+                {user.name?.charAt(0).toUpperCase()}{" "}
+              </div>
+            )}
 
             <div>
               <h2 className="text-xl font-bold">{user.name}</h2>

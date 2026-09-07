@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "../_action/loginAuth";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export function LoginForm() {
   const router = useRouter();
@@ -83,7 +84,14 @@ export function LoginForm() {
         >
           Login
         </button>
+      <p className="text-center ">
+        You {"don't"} have any account,please!{" "}
+        <Link href="/register" className="text-green-500 hover:underline">
+          Register
+        </Link>
+      </p>
       </form>
+
     </div>
   );
 }

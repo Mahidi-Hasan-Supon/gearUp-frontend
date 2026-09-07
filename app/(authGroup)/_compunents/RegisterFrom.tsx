@@ -8,9 +8,8 @@ import { registerAction } from "../_action/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-
 export default function RegisterForm() {
-  const router = useRouter()
+  const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,14 +17,15 @@ export default function RegisterForm() {
     setLoading(true);
     setError("");
 
-    const payload = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      role: formData.get("role") as "CUSTOMER" | "PROVIDER",
-    };
+    // const payload = {
+    //   name: formData.get("name") as string,
+    //   email: formData.get("email") as string,
+    //   password: formData.get("password") as string,
+    //   role: formData.get("role") as "CUSTOMER" | "PROVIDER",
+    // };
 
-    const result = await registerAction(payload);
+    // const result = await registerAction(payload);
+    const result = await registerAction(formData);
     if (result.success) {
       toast.success(result.message);
       router.push("/login");
@@ -78,6 +78,15 @@ export default function RegisterForm() {
           required
         />
       </div>
+      <div className="space-y-2">
+      <Label htmlFor="photoUrl">Profile Photo</Label>
+      <Input
+        id="photo"
+        name="photo"
+        type="file"
+        accept="image/*"
+        />
+        </div>
 
       <div className="space-y-2">
         <Label htmlFor="role">Role</Label>

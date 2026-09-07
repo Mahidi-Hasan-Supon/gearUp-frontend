@@ -1,3 +1,4 @@
+import Link from "next/link";
 import RegisterForm from "../_compunents/RegisterFrom";
 
 export default function RegisterPage() {
@@ -13,9 +14,12 @@ export default function RegisterPage() {
             Join GearUp and start renting sports gear.
           </p>
         </div>
-
         <RegisterForm/>
+        <p className="text-center ">
+        You have already account,please! <Link href="/login" className="text-green-500 hover:underline">Login</Link>
+      </p>
       </div>
+      
     </main>
   );
 }

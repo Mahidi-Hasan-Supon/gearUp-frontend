@@ -7,15 +7,13 @@ type RegisterPayload = {
   role: "CUSTOMER" | "PROVIDER";
 };
 
-export async function registerAction(payload: RegisterPayload) {
+// export async function registerAction(payload: RegisterPayload) {
+export async function registerAction(formData: FormData) {
   const response = await fetch(
     `${process.env.BACKEND_API_URL}/api/auth/register`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: formData
     }
   );
 

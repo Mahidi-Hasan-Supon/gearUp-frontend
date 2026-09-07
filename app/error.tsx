@@ -36,7 +36,7 @@ export default function Error({
             </h2>
 
             <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-400">
-            We couldn't load this page right now. Please try again. If the
+              We ${"couldn't"} load this page right now. Please try again. If the
               problem continues, please come back later.
             </p>
           </div>
@@ -61,7 +61,7 @@ export default function Error({
           {/* Footer */}
           <div className="mt-7 border-t border-slate-800 pt-5">
             <p className="text-xs text-slate-500">
-              Something unexpected happened. Don't worry, you can try again.
+              Something unexpected happened.${" Don't"} worry, you can try again.
             </p>
           </div>
         </div>
