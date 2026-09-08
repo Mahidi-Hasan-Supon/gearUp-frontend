@@ -105,7 +105,7 @@ export default function Navbar() {
             </>
           ) : (
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium shadow-sm transition-all hover:bg-amber-400  hover:shadow-md focus:outline-none  focus:ring-2  focus:ring-primary focus:ring-offset-2 bg-amber-300">
+              <DropdownMenuTrigger className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium shadow-sm transition-all hover:bg-primary hover:shadow-md focus:outline-none  focus:ring-2  focus:ring-primary focus:ring-offset-2 bg-primary text-white">
                 <CircleUser className="h-5 w-5 shrink-0" />
 
                 <span className="leading-none">Click me</span>

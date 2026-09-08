@@ -6,14 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerAction } from "../_action/auth";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import GoogleLoginButton from "./googleLoginButton";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams()
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState<"CUSTOMER" | "PROVIDER">("CUSTOMER");
+  const [role, setRole] = useState<"CUSTOMER" | "PROVIDER">(
+  searchParams.get("role") === "PROVIDER" ? "PROVIDER" : "CUSTOMER"
+);
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);

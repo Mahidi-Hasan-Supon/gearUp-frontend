@@ -1,5 +1,15 @@
 import GearCard from "./_components/GearCard";
 import { Gear } from "./_action/getGear";
+import HeroSection from "@/components/shared/heroSection";
+import FeaturedGear from "@/components/shared/featuredGear";
+import PopularCategories from "@/components/shared/popularCategories";
+import { getCategories } from "../(dashboardGroup)/_action/getCategories";
+import HowItWorks from "@/components/shared/howItWorks";
+import WhyChooseGearUp from "@/components/shared/whyChooseGear";
+import TopProviders from "@/components/shared/topProvider";
+import Statistics from "@/components/shared/statistics";
+import FinalCTA from "@/components/shared/finalCTA";
+import Footer from "@/components/shared/footer";
 
 type GearResponse = {
   success: boolean;
@@ -8,6 +18,21 @@ type GearResponse = {
   data: Gear[];
 };
 
+const gears = await getGears();
+const providers = Array.from(
+  new Map(
+    gears.map((gear) => [
+      gear.provider.id,
+      {
+        id: gear.provider.id,
+        name: gear.provider.name,
+        email: gear.provider.email,
+      },
+    ]),
+  ).values(),
+);
+
+const categoryResult = await getCategories();
 async function getGears(): Promise<Gear[]> {
   const response = await fetch(`${process.env.BACKEND_API_URL}/api/gear`, {
     cache: "no-store",
@@ -23,56 +48,47 @@ async function getGears(): Promise<Gear[]> {
 }
 
 export default async function HomePage() {
-  const gears = await getGears();
-
+const availableGearCount = gears.filter(
+  (gear) => gear.status === "AVAILABLE"
+).length;
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="bg-muted px-6 py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-primary">
-              GearUp
-            </p>
+      <HeroSection></HeroSection>
 
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-              Rent Sports & Outdoor Gear Instantly
-            </h1>
-
-            <p className="mt-6 text-lg text-muted-foreground">
-              Find the perfect sports and outdoor equipment for your next
-              adventure.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* popular categories */}
+      <PopularCategories
+        categories={categoryResult.success ? categoryResult.data : []}
+      ></PopularCategories>
 
       {/* Featured Gear */}
-      <section className="bg-background px-6 py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-foreground">
-              Featured Gear
-            </h2>
+      <FeaturedGear></FeaturedGear>
 
-            <p className="mt-2 text-muted-foreground">
-              Explore our available sports and outdoor equipment.
-            </p>
-          </div>
+      
+      {/* how it works */}
+      <HowItWorks></HowItWorks>
 
-          {gears.length === 0 ? (
-            <p className="text-muted-foreground">
-              No gear available right now.
-            </p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {gears.slice(0, 6).map((gear) => (
-                <GearCard key={gear.id} gear={gear} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      {/* why chose gear */}
+
+      <WhyChooseGearUp></WhyChooseGearUp>
+
+      {/* top Providers */}
+      <TopProviders providers={providers}></TopProviders>
+
+      {/* statistics */}
+      <Statistics 
+      gearCount={availableGearCount}
+      providerCount={providers.length}
+      categoryCount={categoryResult.success ? categoryResult.data.length : 0}
+      ></Statistics>
+
+      {/* finalCTA */}
+      <FinalCTA></FinalCTA>
+    
+
+      {/* footer */}
+      <Footer></Footer>
+
     </main>
   );
 }
