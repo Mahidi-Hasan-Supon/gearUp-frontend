@@ -1,5 +1,5 @@
 import { getAdminGears } from "@/app/(dashboardGroup)/_action/getAdminGears";
-import AdminGearCard from "../../_compunents/adminGearCard";
+import AdminGearTable from "../../_compunents/adminGearTable";
 
 export default async function AdminGearPage() {
   const result = await getAdminGears();
@@ -20,9 +20,7 @@ export default async function AdminGearPage() {
     <div className="space-y-8 p-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">
-          Gear Management
-        </h1>
+        <h1 className="text-3xl font-bold">Gear Management</h1>
 
         <p className="mt-2 text-muted-foreground">
           View and monitor all gear available in the system.
@@ -32,25 +30,16 @@ export default async function AdminGearPage() {
       {/* Total */}
       <div className="text-sm text-muted-foreground">
         Total Gear:{" "}
-        <span className="font-semibold text-foreground">
-          {gears.length}
-        </span>
+        <span className="font-semibold text-foreground">{gears.length}</span>
       </div>
 
-      {/* Gear List */}
+      {/* Gear Table */}
       {gears.length === 0 ? (
         <div className="rounded-xl border p-10 text-center text-muted-foreground">
           No gear found.
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {gears.map((gear) => (
-            <AdminGearCard
-              key={gear.id}
-              gear={gear}
-            />
-          ))}
-        </div>
+        <AdminGearTable gears={gears} />
       )}
     </div>
   );

@@ -47,10 +47,12 @@ async function getGears(): Promise<Gear[]> {
   return result.data;
 }
 
+const gearAvailable = gears.filter((gear)=>gear.status === 'AVAILABLE')
 export default async function HomePage() {
 const availableGearCount = gears.filter(
   (gear) => gear.status === "AVAILABLE"
 ).length;
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
@@ -64,7 +66,7 @@ const availableGearCount = gears.filter(
       {/* Featured Gear */}
       <FeaturedGear></FeaturedGear>
 
-      
+
       {/* how it works */}
       <HowItWorks></HowItWorks>
 

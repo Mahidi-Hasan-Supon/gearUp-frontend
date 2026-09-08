@@ -1,5 +1,6 @@
+
 import { getAdminUsers } from "@/app/(dashboardGroup)/_action/getAdminUsers";
-import AdminUserCard from "../../_compunents/adminUserCard";
+import AdminUsersTable from "../../_compunents/adminUserTable";
 
 export default async function AdminUsersPage() {
   const result = await getAdminUsers();
@@ -14,8 +15,6 @@ export default async function AdminUsersPage() {
     );
   }
 
-  const users = result.data;
-
   return (
     <div className="space-y-8 p-6">
       {/* Header */}
@@ -25,33 +24,12 @@ export default async function AdminUsersPage() {
         </h1>
 
         <p className="mt-2 text-muted-foreground">
-          Manage all users and their account status.
+          Search, manage and update user account status.
         </p>
       </div>
 
-      {/* Users Count */}
-      <div className="text-sm text-muted-foreground">
-        Total Users:{" "}
-        <span className="font-semibold text-foreground">
-          {users.length}
-        </span>
-      </div>
-
-      {/* Users */}
-      {users.length === 0 ? (
-        <div className="rounded-xl border p-10 text-center text-muted-foreground">
-          No users found.
-        </div>
-      ) : (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {users.map((user) => (
-            <AdminUserCard
-              key={user.id}
-              user={user}
-            />
-          ))}
-        </div>
-      )}
+      <AdminUsersTable users={result.data} />
     </div>
   );
 }
+

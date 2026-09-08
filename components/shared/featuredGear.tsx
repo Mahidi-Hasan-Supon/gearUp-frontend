@@ -9,7 +9,6 @@ type GearResponse = {
   message: string;
   data: Gear[];
 };
-
 async function getGears(): Promise<Gear[]> {
   const response = await fetch(`${process.env.BACKEND_API_URL}/api/gear`, {
     cache: "no-store",
@@ -29,7 +28,6 @@ export default async function FeaturedGear() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-
       {/* Featured Gear */}
       <section className="bg-muted/30 px-6 py-20">
         <div className="mx-auto max-w-7xl">

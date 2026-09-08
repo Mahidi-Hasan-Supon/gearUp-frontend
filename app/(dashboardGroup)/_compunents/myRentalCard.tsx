@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  CalendarDays,
-  Package,
-  Star,
-  Wallet,
-} from "lucide-react";
+import { CalendarDays, Package, Star, Wallet } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { createReview } from "../_action/createReviews";
@@ -20,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import RentalStatusBadge from "./rentalStatusBadge";
 
 type Rental = {
   id: string;
@@ -63,9 +59,7 @@ export default function MyRentalCard({
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const isPaid = rental.payment?.some(
-    (payment) => payment.status === "PAID",
-  );
+  const isPaid = rental.payment?.some((payment) => payment.status === "PAID");
 
   const hasReviewed = reviewedRentalIds.includes(rental.id);
 
@@ -123,24 +117,17 @@ export default function MyRentalCard({
             {rental.gear.category?.name || "Gear"}
           </p>
 
-          <h2 className="mt-1 text-xl font-bold">
-            {rental.gear.title}
-          </h2>
+          <h2 className="mt-1 text-xl font-bold">{rental.gear.title}</h2>
 
-          <p className="text-sm text-muted-foreground">
-            {rental.gear.brand}
-          </p>
+          <p className="text-sm text-muted-foreground">{rental.gear.brand}</p>
         </div>
-
         {/* Rental Information */}
         <div className="space-y-4 border-y py-4">
           <div className="flex items-center gap-3">
             <CalendarDays className="h-5 w-5 text-muted-foreground" />
 
             <div>
-              <p className="text-xs text-muted-foreground">
-                Rental Period
-              </p>
+              <p className="text-xs text-muted-foreground">Rental Period</p>
 
               <p className="text-sm font-medium">
                 {new Date(rental.startDate).toLocaleDateString()}
@@ -151,44 +138,32 @@ export default function MyRentalCard({
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">
-              Total Days
-            </span>
+            <span className="text-muted-foreground">Total Days</span>
 
-            <span className="font-medium">
-              {rental.totalDays} days
-            </span>
+            <span className="font-medium">{rental.totalDays} days</span>
           </div>
         </div>
-
         {/* Price */}
         <div className="flex items-center justify-between py-5">
           <div className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-muted-foreground" />
 
-            <span className="text-sm text-muted-foreground">
-              Total Price
-            </span>
+            <span className="text-sm text-muted-foreground">Total Price</span>
           </div>
 
-          <span className="text-xl font-bold">
-            ${rental.totalPrice}
-          </span>
+          <span className="text-xl font-bold">${rental.totalPrice}</span>
         </div>
-
         {/* Rental Status */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            Rental Status
-          </span>
+          <span className="text-sm text-muted-foreground">Rental Status</span>
 
-          <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+          {/* <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
             {rental.status}
-          </span>
+          </span> */}
+          <RentalStatusBadge status={rental.status}></RentalStatusBadge>
         </div>
-
         {/* Payment */}
-        {isPaid ? (
+        {/* {isPaid ? (
           <div className="mt-4 w-full rounded-lg bg-green-50 py-2 text-center text-sm font-medium text-green-700">
             Payment Completed
           </div>
@@ -205,7 +180,50 @@ export default function MyRentalCard({
           <div className="mt-4 w-full rounded-lg bg-muted py-2 text-center text-sm text-muted-foreground">
             Waiting for provider confirmation
           </div>
-        ) : null}
+        ) : null} */}
+
+        {/* Status Action */}
+        <div className="mt-4">
+          {/* PLACED */}
+          {rental.status === "PLACED" && (
+            <div className="w-full rounded-lg bg-yellow-50 py-2.5 text-center text-sm font-medium text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400">
+              Waiting for provider confirmation
+            </div>
+          )}
+
+          {/* CONFIRMED */}
+          {rental.status === "CONFIRMED" && !isPaid && (
+            <Link
+              href={`/dashboard/customer/orders/${rental.id}/pay`}
+              className="block"
+            >
+              <button className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+                Pay Now
+              </button>
+            </Link>
+          )}
+
+          {/* PAID */}
+          {rental.status === "PAID" && (
+            <div className="w-full rounded-lg bg-purple-50 py-2.5 text-center text-sm font-medium text-purple-700 dark:bg-purple-500/10 dark:text-purple-400">
+              Payment completed. Waiting for gear pickup.
+            </div>
+          )}
+
+          {/* PICKED_UP */}
+          {rental.status === "PICKED_UP" && (
+            <div className="w-full rounded-lg bg-green-50 py-2.5 text-center text-sm font-medium text-green-700 dark:bg-green-500/10 dark:text-green-400">
+              You currently have this gear.
+            </div>
+          )}
+
+          {/* CANCELLED */}
+          {rental.status === "CANCELLED" && (
+            <div className="w-full rounded-lg bg-red-50 py-2.5 text-center text-sm font-medium text-red-700 dark:bg-red-500/10 dark:text-red-400">
+              This rental has been cancelled.
+            </div>
+          )}
+        </div>
 
         {/* Review */}
         {rental.status === "RETURNED" && (
@@ -225,9 +243,7 @@ export default function MyRentalCard({
 
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>
-                      Review {rental.gear.title}
-                    </DialogTitle>
+                    <DialogTitle>Review {rental.gear.title}</DialogTitle>
 
                     <DialogDescription>
                       Share your experience with this gear.
@@ -237,9 +253,7 @@ export default function MyRentalCard({
                   <div className="space-y-5">
                     {/* Rating */}
                     <div>
-                      <p className="mb-2 text-sm font-medium">
-                        Your Rating
-                      </p>
+                      <p className="mb-2 text-sm font-medium">Your Rating</p>
 
                       <div className="flex gap-2">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -263,15 +277,11 @@ export default function MyRentalCard({
 
                     {/* Comment */}
                     <div>
-                      <p className="mb-2 text-sm font-medium">
-                        Your Review
-                      </p>
+                      <p className="mb-2 text-sm font-medium">Your Review</p>
 
                       <textarea
                         value={comment}
-                        onChange={(e) =>
-                          setComment(e.target.value)
-                        }
+                        onChange={(e) => setComment(e.target.value)}
                         placeholder="Write your review..."
                         className="min-h-28 w-full resize-none rounded-lg border bg-background p-3 text-sm outline-none focus:ring-2 focus:ring-primary"
                       />
@@ -283,9 +293,7 @@ export default function MyRentalCard({
                       onClick={handleReview}
                       className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      {loading
-                        ? "Submitting..."
-                        : "Submit Review"}
+                      {loading ? "Submitting..." : "Submit Review"}
                     </button>
                   </div>
                 </DialogContent>

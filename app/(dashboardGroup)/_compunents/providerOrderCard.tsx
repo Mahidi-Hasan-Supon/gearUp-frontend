@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import type { ProviderOrder } from "@/app/(dashboardGroup)/_action/getProviderOrders";
 import { updateProviderOrderStatus } from "../_action/updateProviderOrdersStatus";
+import RentalStatusBadge from "./rentalStatusBadge";
 
 type ProviderOrderCardProps = {
   order: ProviderOrder;
@@ -41,9 +42,10 @@ export default function ProviderOrderCard({ order }: ProviderOrderCardProps) {
           <p className="text-sm text-muted-foreground">{order.gear.brand}</p>
         </div>
 
-        <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
+        {/* <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
           {order.status}
-        </span>
+        </span> */}
+        <RentalStatusBadge status={order.status}/>
       </div>
 
       {/* Customer + Rental Info */}

@@ -1,26 +1,21 @@
 import { getProviderOrders } from "@/app/(dashboardGroup)/_action/getProviderOrders";
-import ProviderOrderCard from "../../_compunents/providerOrderCard";
+import ProviderOrdersTable from "../../_compunents/providerOrdersTable";
 
 export default async function ProviderOrdersPage() {
   const result = await getProviderOrders();
 
   if (!result.success) {
-    return (
-      <div className="p-6 text-destructive">
-        {result.message}
-      </div>
-    );
+    return <div className="p-6 text-destructive">{result.message}</div>;
   }
 
   return (
-    <div className="p-6">
+    <div className="mx-auto max-w-7xl p-6">
+      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">
-          Incoming Orders
-        </h1>
+        <h1 className="text-3xl font-bold">Incoming Orders</h1>
 
         <p className="mt-2 text-muted-foreground">
-          Manage your gear rental orders.
+          Manage and update your incoming gear rental orders.
         </p>
       </div>
 
@@ -29,14 +24,7 @@ export default async function ProviderOrdersPage() {
           No orders found.
         </div>
       ) : (
-        <div className="space-y-4">
-          {result.data.map((order) => (
-            <ProviderOrderCard
-              key={order.id}
-              order={order}
-            />
-          ))}
-        </div>
+        <ProviderOrdersTable orders={result.data} />
       )}
     </div>
   );

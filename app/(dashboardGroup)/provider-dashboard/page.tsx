@@ -1,12 +1,26 @@
+
 import Link from "next/link";
-import { ArrowRight, Package, Plus, Tags, Boxes } from "lucide-react";
+import {
+  ArrowRight,
+  Package,
+  Plus,
+  Tags,
+  Boxes,
+  ClipboardList,
+  Activity,
+} from "lucide-react";
 
 import { getProviderGears } from "@/app/(dashboardGroup)/_action/getProviderGears";
+import { getProviderOrders } from "@/app/(dashboardGroup)/_action/getProviderOrders";
 
 export default async function ProviderDashboardPage() {
-  const result = await getProviderGears();
+  const [gearResult, orderResult] = await Promise.all([
+    getProviderGears(),
+    getProviderOrders(),
+  ]);
 
-  const gears = result.data ?? [];
+  const gears = gearResult.data ?? [];
+  const orders = orderResult.data ?? [];
 
   const totalGear = gears.length;
 
@@ -18,17 +32,33 @@ export default async function ProviderDashboardPage() {
   const availableGear = gears.filter(
     (gear) => gear.status === "AVAILABLE",
   ).length;
-
+  
   const categories = new Set(
-    gears.map((gear) => gear.category?.name).filter(Boolean),
+    gears
+      .map((gear) => gear.category?.name)
+      .filter(Boolean),
   ).size;
+
+  // Pending orders waiting for provider confirmation
+  const pendingOrders = orders.filter(
+    (order) => order.status === "PLACED",
+  ).length;
+
+  // Active rentals currently in progress
+  const activeRentals = orders.filter((order) =>
+    ["CONFIRMED", "PAID", "PICKED_UP"].includes(
+      order.status,
+    ),
+  ).length;
 
   return (
     <div className="mx-auto max-w-7xl p-6">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Provider Dashboard</h1>
+          <h1 className="text-3xl font-bold">
+            Provider Dashboard
+          </h1>
 
           <p className="mt-2 text-muted-foreground">
             Manage your gear and track your rental business.
@@ -45,14 +75,18 @@ export default async function ProviderDashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {/* Total Gear */}
         <div className="rounded-2xl border bg-background p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Gear</p>
+              <p className="text-sm text-muted-foreground">
+                Total Gear
+              </p>
 
-              <p className="mt-2 text-3xl font-bold">{totalGear}</p>
+              <p className="mt-2 text-3xl font-bold">
+                {totalGear}
+              </p>
             </div>
 
             <div className="rounded-xl bg-muted p-3">
@@ -61,13 +95,55 @@ export default async function ProviderDashboardPage() {
           </div>
         </div>
 
+        {/* Active Rentals */}
+        <div className="rounded-2xl border bg-background p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Active Rentals
+              </p>
+
+              <p className="mt-2 text-3xl font-bold">
+                {activeRentals}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-muted p-3">
+              <Activity className="h-6 w-6" />
+            </div>
+          </div>
+        </div>
+
+        {/* Pending Orders */}
+        <div className="rounded-2xl border bg-background p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Pending Orders
+              </p>
+
+              <p className="mt-2 text-3xl font-bold">
+                {pendingOrders}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-muted p-3">
+              <ClipboardList className="h-6 w-6" />
+            </div>
+          </div>
+        </div>
+
         {/* Total Quantity */}
         <div className="rounded-2xl border bg-background p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Quantity</p>
+              <p className="text-sm text-muted-foreground">
+                Total Quantity
+              </p>
 
-              <p className="mt-2 text-3xl font-bold">{totalQuantity}</p>
+              <p className="mt-2 text-3xl font-bold">
+                {totalQuantity}
+              </p>
             </div>
 
             <div className="rounded-xl bg-muted p-3">
@@ -76,13 +152,17 @@ export default async function ProviderDashboardPage() {
           </div>
         </div>
 
-        {/* Available */}
+        {/* Available Gear */}
         <div className="rounded-2xl border bg-background p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Available Gear</p>
+              <p className="text-sm text-muted-foreground">
+                Available Gear
+              </p>
 
-              <p className="mt-2 text-3xl font-bold">{availableGear}</p>
+              <p className="mt-2 text-3xl font-bold">
+                {availableGear}
+              </p>
             </div>
 
             <div className="rounded-xl bg-muted p-3">
@@ -95,9 +175,13 @@ export default async function ProviderDashboardPage() {
         <div className="rounded-2xl border bg-background p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Categories</p>
+              <p className="text-sm text-muted-foreground">
+                Categories
+              </p>
 
-              <p className="mt-2 text-3xl font-bold">{categories}</p>
+              <p className="mt-2 text-3xl font-bold">
+                {categories}
+              </p>
             </div>
 
             <div className="rounded-xl bg-muted p-3">
@@ -111,7 +195,9 @@ export default async function ProviderDashboardPage() {
       <div className="mt-8 rounded-2xl border bg-background p-6 shadow-sm">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold">Your Gear</h2>
+            <h2 className="text-xl font-bold">
+              Your Gear
+            </h2>
 
             <p className="mt-1 text-sm text-muted-foreground">
               Manage your listed equipment.
@@ -131,7 +217,9 @@ export default async function ProviderDashboardPage() {
           <div className="rounded-xl border border-dashed p-10 text-center">
             <Package className="mx-auto h-10 w-10 text-muted-foreground" />
 
-            <h3 className="mt-4 font-semibold">No gear added yet</h3>
+            <h3 className="mt-4 font-semibold">
+              No gear added yet
+            </h3>
 
             <p className="mt-1 text-sm text-muted-foreground">
               Add your first gear to start renting.
@@ -148,7 +236,10 @@ export default async function ProviderDashboardPage() {
         ) : (
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {gears.slice(0, 3).map((gear) => (
-              <div key={gear.id} className="overflow-hidden rounded-xl border">
+              <div
+                key={gear.id}
+                className="overflow-hidden rounded-xl border"
+              >
                 <div className="h-40 bg-muted">
                   {gear.image ? (
                     <img
@@ -165,15 +256,22 @@ export default async function ProviderDashboardPage() {
 
                 <div className="p-4">
                   <p className="text-xs text-muted-foreground">
-                    {gear.category?.name || "Uncategorized"}
+                    {gear.category?.name ||
+                      "Uncategorized"}
                   </p>
 
-                  <h3 className="mt-1 font-semibold">{gear.title}</h3>
+                  <h3 className="mt-1 font-semibold">
+                    {gear.title}
+                  </h3>
 
-                  <p className="text-sm text-muted-foreground">{gear.brand}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {gear.brand}
+                  </p>
 
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="font-bold">${gear.pricePerDay}/day</span>
+                    <span className="font-bold">
+                      ${gear.pricePerDay}/day
+                    </span>
 
                     <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                       {gear.status}
@@ -194,7 +292,9 @@ export default async function ProviderDashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Manage Your Gear</h3>
+              <h3 className="font-semibold">
+                Manage Your Gear
+              </h3>
 
               <p className="mt-1 text-sm text-muted-foreground">
                 Add, edit or delete your equipment.
@@ -211,7 +311,9 @@ export default async function ProviderDashboardPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Manage Orders</h3>
+              <h3 className="font-semibold">
+                Manage Orders
+              </h3>
 
               <p className="mt-1 text-sm text-muted-foreground">
                 Confirm orders and manage rental status.
@@ -225,3 +327,4 @@ export default async function ProviderDashboardPage() {
     </div>
   );
 }
+
