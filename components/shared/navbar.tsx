@@ -10,11 +10,12 @@ import {
 import { logoutUser } from "@/service/logout";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { redirectToMyProfile, getCurrentUser } from "@/service/getMyProfile";
+import {  getCurrentUser } from "@/service/getMyProfile";
 import { useEffect, useState } from "react";
 import { User } from "@/lib/types";
 import Image from "next/image";
-import { CircleUser } from "lucide-react";
+import { ChevronDown, CircleUser, House, Info, Phone, TentTree } from "lucide-react";
+import ThemeToggle from "./theme-toggle";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -55,38 +56,43 @@ export default function Navbar() {
         </Link>
 
         {/* Navigation */}
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           <Link
             href="/"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-primary"
           >
+            <House className="h-4 w-4" />
             Home
           </Link>
 
           <Link
             href="/gear"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-primary"
           >
+            <TentTree className="h-4 w-4" />
             Gear
           </Link>
 
           <Link
             href="/about"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-primary"
           >
+            <Info className="h-4 w-4" />
             About
           </Link>
 
           <Link
             href="/contact"
-            className="text-sm font-medium transition-colors hover:text-primary"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-primary"
           >
+            <Phone className="h-4 w-4" />
             Contact
           </Link>
         </div>
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
+          <ThemeToggle/>
           {!user ? (
             <>
               <Button variant="outline">
@@ -100,10 +106,10 @@ export default function Navbar() {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium shadow-sm transition-all hover:bg-amber-400  hover:shadow-md focus:outline-none  focus:ring-2  focus:ring-primary focus:ring-offset-2 bg-amber-300">
-
-                 <CircleUser className="h-5 w-5 shrink-0" />
+                <CircleUser className="h-5 w-5 shrink-0" />
 
                 <span className="leading-none">Click me</span>
+                <ChevronDown />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
                 {user.photoUrl ? (
@@ -139,21 +145,6 @@ export default function Navbar() {
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
-
-                <DropdownMenuItem onClick={handleProfile}>
-                  <form>
-                    <button type="submit" className="w-full text-left">
-                      Profile
-                    </button>
-                  </form>
-                </DropdownMenuItem>
-                {/* <DropdownMenuItem>
-                  <form action={redirectToMyProfile}>
-                    <button type="submit" className="w-full text-left">
-                      Profile
-                    </button>
-                  </form>
-                </DropdownMenuItem> */}
 
                 <DropdownMenuItem onClick={handleLogout}>
                   Logout

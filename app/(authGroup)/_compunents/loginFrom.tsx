@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { loginUser } from "../_action/loginAuth";
 import { toast } from "sonner";
 import Link from "next/link";
+import GoogleLoginButton from "./googleLoginButton";
 
 export function LoginForm() {
   const router = useRouter();
@@ -84,14 +85,30 @@ export function LoginForm() {
         >
           Login
         </button>
-      <p className="text-center ">
-        You {"don't"} have any account,please!{" "}
-        <Link href="/register" className="text-green-500 hover:underline">
-          Register
-        </Link>
-      </p>
-      </form>
 
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+
+          <div className="relative flex justify-center">
+            <span className="bg-background px-3 text-sm text-muted-foreground">
+              OR
+            </span>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLoginButton />
+        </div>
+        
+        <p className="text-center ">
+          You {"don't"} have any account,please!{" "}
+          <Link href="/register" className="text-green-500 hover:underline">
+            Register
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }

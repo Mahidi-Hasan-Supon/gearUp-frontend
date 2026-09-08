@@ -7,11 +7,13 @@ import { Label } from "@/components/ui/label";
 import { registerAction } from "../_action/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import GoogleLoginButton from "./googleLoginButton";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState<"CUSTOMER" | "PROVIDER">("CUSTOMER");
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -79,14 +81,9 @@ export default function RegisterForm() {
         />
       </div>
       <div className="space-y-2">
-      <Label htmlFor="photoUrl">Profile Photo</Label>
-      <Input
-        id="photo"
-        name="photo"
-        type="file"
-        accept="image/*"
-        />
-        </div>
+        <Label htmlFor="photoUrl">Profile Photo</Label>
+        <Input id="photo" name="photo" type="file" accept="image/*" />
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="role">Role</Label>
@@ -94,7 +91,8 @@ export default function RegisterForm() {
         <select
           id="role"
           name="role"
-          defaultValue="CUSTOMER"
+          value={role}
+          onChange={(e) => setRole(e.target.value as "CUSTOMER" | "PROVIDER")}
           className="h-10 w-full rounded-md border bg-background px-3 text-sm"
         >
           <option value="CUSTOMER">Customer</option>
@@ -107,6 +105,22 @@ export default function RegisterForm() {
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Creating account..." : "Create Account"}
       </Button>
+
+      <div className="relative py-2">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+
+        <div className="relative flex justify-center">
+          <span className="bg-background px-3 text-sm text-muted-foreground">
+            OR
+          </span>
+        </div>
+      </div>
+
+      <div className="flex justify-center">
+        <GoogleLoginButton role={role} />
+      </div>
     </form>
   );
 }
