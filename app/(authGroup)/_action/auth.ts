@@ -1,9 +1,15 @@
- "use server";
+"use server";
 
 export async function registerAction(formData: FormData) {
+  //  FormData 
+  const payload = new FormData();
+  payload.append("name", String(formData.get("name") || ""));
+  payload.append("email", String(formData.get("email") || ""));
+  payload.append("password", String(formData.get("password") || ""));
+  payload.append("role", String(formData.get("role") || "CUSTOMER"));
   const photo = formData.get("photo");
 
-  // Empty file হলে FormData থেকে remove করবে
+  // Empty file  FormData  remove 
   if (photo instanceof File && photo.size === 0) {
     formData.delete("photo");
   }
@@ -39,4 +45,3 @@ export async function registerAction(formData: FormData) {
     };
   }
 }
- 
