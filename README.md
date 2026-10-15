@@ -1,4 +1,4 @@
-# 🏕️ GearUp — Rent Sports & Outdoor Gear Instantly
+ # 🏕️ GearUp — Rent Sports & Outdoor Gear Instantly
 
 <p align="center">
   <strong>Explore more. Own less. Adventure without limits.</strong>
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://gearup-frontend-phi.vercel.app/">
+  <a href="[https://gearup-frontend-phi.vercel.app/](https://gearup-frontend-phi.vercel.app)">
     <strong>🌐 Live Demo</strong>
   </a>
   ·
@@ -185,7 +185,7 @@ You will also need Stripe credentials to test payment functionality.
 ### 1. Clone the Repository
 
 ```bash
-git clone <YOUR_GEARUP_REPOSITORY_URL>
+git clone [<YOUR_GEARUP_REPOSITORY_URL>](https://github.com/Mahidi-Hasan-Supon/gearUp-frontend.git)
 cd <YOUR_GEARUP_PROJECT_DIRECTORY>
 ```
 
